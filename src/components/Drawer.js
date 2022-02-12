@@ -10,8 +10,12 @@ import {
   Input,
 } from "@chakra-ui/react";
 
+import { useContext } from "react";
+import DrawerContext from "../contexts/DrawerContext";
+
 export default function DrawerExample({ isOpen, onClose, btnRef }) {
-  console.log(isOpen);
+  const { setSearchInput } = useContext(DrawerContext);
+  const handleSearchInput = ({ target: { value } }) => setSearchInput(value);
   return (
     <>
       <Drawer
@@ -26,7 +30,10 @@ export default function DrawerExample({ isOpen, onClose, btnRef }) {
           <DrawerHeader>Create your account</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <Input
+              onChange={handleSearchInput}
+              placeholder="Search employees..."
+            />
           </DrawerBody>
 
           <DrawerFooter>

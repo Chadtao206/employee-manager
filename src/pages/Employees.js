@@ -1,13 +1,23 @@
-import { Text } from "@chakra-ui/react";
+import { Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Table from "../components/Table";
 import { getEmployees } from "../utils/API";
 export default function Employees() {
   const [employees, setEmployees] = useState([]);
+  const reminder = useToast();
 
   useEffect(() => {
-    getEmployees().then((data) => setEmployees(data.results));
-  }, []);
+    getEmployees().then((data) => {
+      setEmployees(data.results);
+      reminder({
+        title: "Employees Loaded!",
+        description: `Successfully Loaded ${data.results.length} Employees 🥂!`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+  }, [reminder]);
 
   return (
     <>

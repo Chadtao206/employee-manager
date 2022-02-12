@@ -6,10 +6,11 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   Avatar,
   WrapItem,
 } from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
+import DrawerContext from "../contexts/DrawerContext";
 
 const AvatarComp = ({ name, url }) => {
   return (
@@ -20,11 +21,29 @@ const AvatarComp = ({ name, url }) => {
 };
 
 export default function TableElement({ employees }) {
-  console.log(employees);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const { searchInput } = useContext(DrawerContext);
+  useEffect(() => {
+    setFilteredEmployees(employees);
+  }, [employees]);
+
+  useEffect(() => {
+    const input = searchInput.toLowerCase();
+    //filter employees based on search input
+    const filtered = employees.filter(
+      (emp) =>
+        emp.name.first.toLowerCase().includes(input) ||
+        emp.name.last.toLowerCase().includes(input) ||
+        emp.email.toLowerCase().includes(input)
+    );
+    setFilteredEmployees(filtered);
+  }, [searchInput, employees]);
+
+  console.log("IN THE TABLE COMPONENT!", searchInput);
+
   return (
     <>
-      <Table variant="striped" colorScheme="teal">
-        <TableCaption>Imperial to metric conversion factors</TableCaption>
+      <Table variant="striped" colorScheme="cyan">
         <Thead>
           <Tr>
             <Th>Name</Th>
@@ -35,7 +54,7 @@ export default function TableElement({ employees }) {
           </Tr>
         </Thead>
         <Tbody>
-          {employees.map((emp) => {
+          {filteredEmployees.map((emp) => {
             const fullName = `${emp.name.title} ${emp.name.first} ${emp.name.last}`;
             return (
               <Tr key={Math.random()}>
